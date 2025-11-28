@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OVERHEAT — премиальная Crash-игра казино</title>
+  <meta name="description" content="OVERHEAT — динамичная Crash-игра с контролируемым ростом множителя до x10 000, таблицей лидеров и рангами. Держи палец на экране и забирай выигрыш до взрыва." />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --oh-orange: #f97316;
+      --oh-bg: #020617;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.22), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.32), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(15, 23, 42, 0.9), #000000 70%);
+      color: #f9fafb;
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* Primary CTA button */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.6rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(248, 250, 252, 0.7);
+      background-color: #020617;
+      color: var(--oh-orange);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--oh-orange);
+      color: #020617;
+      border-color: var(--oh-orange);
+      box-shadow: 0 0 30px rgba(249, 115, 22, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 0 16px rgba(249, 115, 22, 0.7);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 2px solid var(--oh-orange);
+      outline-offset: 3px;
+    }
+
+    /* Secondary / ghost button */
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1.2rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.8);
+      color: #e5e7eb;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--oh-orange);
+      color: var(--oh-orange);
+      box-shadow: 0 0 20px rgba(249, 115, 22, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost:active {
+      transform: translateY(0);
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-ghost:focus-visible {
+      outline: 2px solid var(--oh-orange);
+      outline-offset: 3px;
+    }
+
+    /* TikTok warning overlay smooth fade */
+    #tiktok-warning {
+      transition: opacity 0.3s ease;
+    }
+
+    /* Hide scrollbars in some decorative containers, but keep scroll usable */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-neutral-50 antialiased">
+  <div class="relative overflow-hidden">
+    <!-- Background decorative glows -->
+    <div class="pointer-events-none fixed inset-0 -z-10">
+      <div class="absolute -top-40 -left-32 h-80 w-80 rounded-full bg-gradient-to-br from-orange-500/20 via-orange-400/5 to-transparent blur-3xl"></div>
+      <div class="absolute -top-20 right-0 h-72 w-72 rounded-full bg-gradient-to-tr from-slate-100/10 via-slate-500/10 to-transparent blur-3xl"></div>
+      <div class="absolute bottom-[-120px] left-1/2 h-80 w-[480px] -translate-x-1/2 rounded-[999px] bg-gradient-to-t from-orange-500/30 via-amber-200/10 to-transparent blur-3xl opacity-60"></div>
+    </div>
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-30 border-b border-white/10 bg-black/70 backdrop-blur-xl">
+      <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-20 sm:px-6 lg:px-8">
+        <a href="#top" class="flex items-center gap-3">
+          <div class="relative h-10 w-10 overflow-hidden rounded-2xl border border-white/15 bg-neutral-900/80 shadow-[0_0_22px_rgba(15,23,42,0.9)]">
+            <img src="overheat.png" alt="Логотип игры OVERHEAT" class="h-full w-full object-cover object-center" />
+          </div>
+          <div class="leading-tight">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">Crash Game</p>
+            <p class="text-[1.15rem] font-extrabold tracking-[0.22em] text-white">
+              OVER<span class="text-orange-500">HEAT</span>
+            </p>
+          </div>
+        </a>
+
+        <nav class="hidden items-center gap-8 text-[11px] font-medium uppercase tracking-[0.2em] text-neutral-300 md:flex">
+          <a href="#features" class="transition hover:text-white">Особенности</a>
+          <a href="#how-it-works" class="transition hover:text-white">Как играть</a>
+          <a href="#how-to-find" class="transition hover:text-white">Где найти</a>
+          <a href="#support" class="transition hover:text-white">Поддержка</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="#support" class="hidden text-[10px] font-semibold uppercase tracking-[0.26em] text-neutral-400 transition hover:text-orange-400 sm:inline-flex">TG SUPPORT</a>
+          <!-- В href подставьте свою ссылку на игру -->
+          <a href="YOUR_GAME_LINK_HERE" class="btn-primary text-[10px] sm:text-[11px]">ИГРАТЬ</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main id="top" class="mx-auto max-w-6xl space-y-24 px-4 pb-16 pt-8 sm:px-6 sm:pt-14 lg:px-8 lg:pt-16">
+      <!-- HERO -->
+      <section aria-labelledby="hero-title" class="relative">
+        <div class="pointer-events-none absolute -right-32 top-10 h-64 w-64 rounded-full bg-gradient-to-br from-orange-500/40 via-amber-300/10 to-transparent blur-3xl opacity-70"></div>
+
+        <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+          <!-- Hero text -->
+          <div class="space-y-8">
+            <div class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.26em] text-neutral-300 backdrop-blur">
+              <span class="inline-flex h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_0_4px_rgba(249,115,22,0.45)]"></span>
+              Премиальная Crash-игра казино
+            </div>
+
+            <div>
+              <h1 id="hero-title" class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                <span class="block text-neutral-100">OVERHEAT</span>
+                <span class="mt-1 block text-[1.4rem] sm:text-2xl">
+                  <span class="text-neutral-400">КАЖДОЕ</span>
+                  <span class="text-orange-500"> НАЖАТИЕ</span>
+                  <span class="text-neutral-400"> ИМЕЕТ ЦЕНУ</span>
+                </span>
+              </h1>
+              <p class="mt-4 max-w-xl text-sm text-neutral-300 sm:text-base">
+                OVERHEAT — это <span class="font-semibold text-white">динамичная Crash-игра</span>, где множитель выигрыша
+                постоянно растёт, а ты решаешь, когда забрать ставку. Держи палец на экране, контролируй рост множителя и
+                успей обналичить до того, как кривая <span class="font-semibold text-orange-400">взорвётся</span>.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4">
+              <!-- В href подставьте свою ссылку на игру -->
+              <a href="YOUR_GAME_LINK_HERE" class="btn-primary text-[11px] sm:text-xs">ИГРАТЬ</a>
+              <a href="#how-it-works" class="btn-ghost text-[10px] sm:text-[11px]">Как это работает</a>
+            </div>
+
+            <div class="grid max-w-md grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-300">МАКС. МНОЖИТЕЛЬ</p>
+                <p class="mt-1 text-2xl font-extrabold text-orange-400">x10&nbsp;000</p>
+                <p class="mt-1 text-[11px] text-neutral-400">Глубокая волатильность и взрывной рост коэффициентов.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-300">РЕЖИМ ИГРЫ</p>
+                <p class="mt-1 text-sm font-semibold text-neutral-100">Контролируемый Crash</p>
+                <p class="mt-1 text-[11px] text-neutral-400">Множитель растёт только пока твой палец на экране.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero visual: "3D" premium accent -->
+          <div class="relative">
+            <div class="pointer-events-none absolute -inset-10 -z-10 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.4),transparent_65%)]"></div>
+
+            <div class="relative overflow-hidden rounded-[30px] border border-orange-500/50 bg-gradient-to-br from-neutral-900 via-black to-neutral-950 p-6 shadow-[0_0_60px_rgba(249,115,22,0.65)]">
+              <!-- Diagonal light beams -->
+              <div class="pointer-events-none absolute -left-32 top-14 h-40 w-72 -rotate-12 bg-gradient-to-r from-white/5 via-orange-400/50 to-transparent blur-3xl opacity-80"></div>
+              <div class="pointer-events-none absolute -right-20 bottom-[-40px] h-48 w-40 rotate-12 bg-gradient-to-t from-orange-500/40 via-amber-300/20 to-transparent blur-3xl opacity-70"></div>
+
+              <div class="relative space-y-4">
+                <!-- Top info row -->
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-neutral-100 via-slate-400 to-neutral-900 shadow-[0_0_35px_rgba(148,163,184,0.9)]">
+                      <span class="text-xl text-neutral-900">♟</span>
+                    </div>
+                    <div class="text-[11px] leading-snug">
+                      <p class="font-semibold uppercase tracking-[0.18em] text-neutral-100">ПРЕМИУМ-РАУНД</p>
+                      <p class="text-[10px] text-neutral-400">Металлические фигуры, глянец и световые блики.</p>
+                    </div>
+                  </div>
+                  <span class="rounded-full bg-orange-500/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-orange-200">LIVE</span>
+                </div>
+
+                <!-- Chart card -->
+                <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-tl from-black via-neutral-900 to-slate-900 p-5">
+                  <div class="pointer-events-none absolute -left-10 bottom-[-40px] h-32 w-32 rounded-full bg-gradient-to-tr from-neutral-100 via-slate-400 to-slate-900 blur-sm opacity-80"></div>
+                  <div class="pointer-events-none absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-gradient-to-bl from-orange-500 via-amber-300 to-transparent blur-2xl opacity-80"></div>
+
+                  <div class="relative">
+                    <p class="mb-2 text-[11px] uppercase tracking-[0.18em] text-neutral-400">ТЕКУЩИЙ РАУНД</p>
+                    <div class="flex items-baseline justify-between gap-4">
+                      <p class="text-4xl font-extrabold text-orange-400 drop-shadow-[0_0_22px_rgba(249,115,22,0.9)]">x128.4</p>
+                      <p class="text-[10px] text-neutral-400">Цель хайроллеров — исторический пик x10&nbsp;000</p>
+                    </div>
+
+                    <div class="relative mt-4 h-24 w-full overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-t from-black via-neutral-900 to-neutral-800">
+                      <div class="absolute left-4 top-3 h-px w-[85%] border-t border-dashed border-white/15"></div>
+                      <div class="absolute inset-x-3 bottom-3 flex items-end justify-between text-[10px] text-neutral-500">
+                        <span>СТАРТ</span>
+                        <span>РИСК</span>
+                        <span>КАШ-АУТ</span>
+                      </div>
+
+                      <svg viewBox="0 0 300 100" class="relative z-10 h-full w-full">
+                        <defs>
+                          <linearGradient id="ohLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#f97316" />
+                            <stop offset="55%" stop-color="#fb923c" />
+                            <stop offset="100%" stop-color="#facc15" />
+                          </linearGradient>
+                        </defs>
+                        <polyline
+                          fill="none"
+                          stroke="url(#ohLineGradient)"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          points="0,90 35,82 70,76 105,67 135,60 165,50 195,36 225,26 255,16 285,10 300,7"
+                        ></polyline>
+                        <circle cx="225" cy="26" r="4" fill="#f97316"></circle>
+                        <circle cx="300" cy="7" r="5" fill="#fefce8" stroke="#f97316" stroke-width="2"></circle>
+                      </svg>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between text-[11px] text-neutral-300">
+                      <div class="flex items-center gap-2">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.5)]"></span>
+                        <span>125 игроков в раунде</span>
+                      </div>
+                      <span class="text-neutral-400">ср. кэш-аут <span class="font-semibold text-orange-300">x7.4</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Mini feature chips -->
+                <div class="grid grid-cols-3 gap-3 text-[11px] text-neutral-300">
+                  <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                    <p class="font-semibold text-neutral-100">Crash Game</p>
+                    <p class="mt-1 text-neutral-400">Классика жанра с премиальным визуалом.</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                    <p class="font-semibold text-neutral-100">Контроль</p>
+                    <p class="mt-1 text-neutral-400">Множитель растёт, пока палец на экране.</p>
+                  </div>
+                  <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+                    <p class="font-semibold text-neutral-100">Лидеры</p>
+                    <p class="mt-1 text-neutral-400">Онлайн-таблица топ-выигрышей.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pointer-events-none absolute -right-3 -bottom-8 hidden rotate-90 text-[10px] uppercase tracking-[0.3em] text-neutral-600 lg:block">
+              OVERHEAT • HIGH VOLATILITY • x10&nbsp;000
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Divider -->
+      <div class="border-t border-dashed border-neutral-800/80"></div>
+
+      <!-- FEATURES / ADVANTAGES -->
+      <section id="features" aria-labelledby="features-title" class="space-y-10">
+        <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+          <div>
+            <div class="flex items-center gap-2">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">Особенности игры</p>
+              <span class="text-[10px] text-orange-500">✕</span>
+              <span class="text-[10px] text-orange-500">✦</span>
+            </div>
+            <h2 id="features-title" class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">
+              Crash-игра <span class="text-orange-500">с полным контролем</span>
+            </h2>
+          </div>
+          <p class="max-w-xl text-sm text-neutral-300 sm:text-base">
+            OVERHEAT создавалась как <span class="font-semibold text-white">продукт финансового уровня</span>: чистая геометрия,
+            строгая типографика и уверенный тёмный интерфейс. В центре — механика Crash с акцентом на контроль и прозрачность
+            для игрока.
+          </p>
+        </div>
+
+        <!-- Advantage cards -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Crash Game -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-gradient-to-bl from-orange-500/40 via-amber-300/10 to-transparent blur-2xl opacity-70"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-sm">✦</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Crash Game</h3>
+              <p class="text-sm text-neutral-300">
+                Множитель выигрыша постоянно растёт, а твоя задача — обналичить ставку до взрыва. Чем дольше ждёшь, тем
+                выше риск и потенциальный выигрыш.
+              </p>
+            </div>
+          </article>
+
+          <!-- Контролируемый рост -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute -left-12 top-0 h-24 w-24 rounded-full bg-gradient-to-tr from-slate-200/20 via-slate-500/10 to-transparent blur-2xl opacity-70"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-xs">◎</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Контролируемый рост</h3>
+              <p class="text-sm text-neutral-300">
+                Множитель увеличивается только тогда, когда ты держишь палец на экране. Убрал палец слишком поздно — кривая
+                взрывается и ставка сгорает.
+              </p>
+            </div>
+          </article>
+
+          <!-- Увеличивающийся множитель -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute -right-10 bottom-0 h-24 w-24 rounded-full bg-gradient-to-tl from-orange-500/40 via-amber-200/10 to-transparent blur-2xl opacity-80"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-sm">↗</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Увеличивающийся множитель</h3>
+              <p class="text-sm text-neutral-300">
+                Динамический коэффициент, способный достигать <span class="font-semibold text-orange-400">x10&nbsp;000</span>.
+                Чем выше множитель, тем сильнее визуальный накал интерфейса.
+              </p>
+            </div>
+          </article>
+
+          <!-- Таблица лидеров -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute -left-10 -bottom-10 h-28 w-28 rounded-full bg-gradient-to-tr from-slate-50/15 via-slate-500/10 to-transparent blur-2xl opacity-70"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-xs">≣</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Таблица лидеров</h3>
+              <p class="text-sm text-neutral-300">
+                Онлайн-таблица отображает последние ставки, кэш-ауты и самые крупные выигрыши за всю историю игры — всё
+                прозрачно и в реальном времени.
+              </p>
+            </div>
+          </article>
+
+          <!-- Ранги -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute right-[-10px] top-[-12px] h-24 w-24 rounded-full bg-gradient-to-bl from-orange-500/45 via-amber-200/15 to-transparent blur-2xl opacity-80"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-xs">★</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Ранги и прогресс</h3>
+              <p class="text-sm text-neutral-300">
+                Делая ставки, игроки продвигаются по рангам, открывая новые уровни персонализации интерфейса, аватары и
+                эксклюзивные визуальные эффекты.
+              </p>
+            </div>
+          </article>
+
+          <!-- Настройка -->
+          <article class="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="pointer-events-none absolute left-[-8px] top-[-10px] h-24 w-24 rounded-full bg-gradient-to-br from-slate-50/15 via-slate-400/10 to-transparent blur-2xl opacity-80"></div>
+            <div class="relative flex flex-col gap-3">
+              <div class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/10 text-orange-400">
+                <span class="text-xs">⚙</span>
+              </div>
+              <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-neutral-100">Персонализация</h3>
+              <p class="text-sm text-neutral-300">
+                Игроки могут настраивать игровую зону: тип сетки, яркость, акцентные цвета и элементы интерфейса, подстраивая
+                OVERHEAT под свой стиль.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Divider -->
+      <div class="border-t border-dashed border-neutral-800/80"></div>
+
+      <!-- HOW IT WORKS -->
+      <section id="how-it-works" aria-labelledby="how-title" class="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <!-- Text column -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-2">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">Как играть</p>
+            <span class="text-[10px] text-orange-500">+</span>
+            <span class="text-[10px] text-orange-500">✕</span>
+          </div>
+          <h2 id="how-title" class="text-2xl font-extrabold text-white sm:text-3xl">
+            <span class="text-orange-500">Простая</span> механика, строгий интерфейс
+          </h2>
+
+          <div class="space-y-3 text-sm text-neutral-300 sm:text-base">
+            <p>
+              <span class="font-semibold text-white">1. Подготовься.</span> Выбери размер ставки и, при необходимости,
+              включи автокэш-аут на комфортном для себя множителе.
+            </p>
+            <p>
+              <span class="font-semibold text-white">2. Зажми.</span> Раунд начинается — <span class="font-semibold">держи палец на экране</span>.
+              Множитель растёт только в этот момент.
+            </p>
+            <p>
+              <span class="font-semibold text-white">3. Реши.</span> Каждый тик множителя — это выбор между безопасным выходом и
+              попыткой поймать <span class="font-semibold text-orange-400">сверхприбыль</span>.
+            </p>
+            <p>
+              <span class="font-semibold text-white">4. Успей до взрыва.</span> Отпускаешь палец — ставка фиксируется по текущему
+              множителю. Опоздал на долю секунды — <span class="font-semibold text-orange-400">OVERHEAT</span> сжигает раунд.
+            </p>
+          </div>
+
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl border border-neutral-700/80 bg-neutral-900/70 px-4 py-3">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-300">УРОВЕНЬ РИСКА</p>
+              <p class="mt-1 text-sm font-semibold text-orange-400">Высокий</p>
+              <p class="mt-1 text-[11px] text-neutral-400">Создана для тех, кто умеет держать холодную голову при x100+.</p>
+            </div>
+            <div class="rounded-2xl border border-neutral-700/80 bg-neutral-900/70 px-4 py-3">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-300">СТИЛЬ ИГРЫ</p>
+              <p class="mt-1 text-sm font-semibold text-neutral-100">Точный тайминг</p>
+              <p class="mt-1 text-[11px] text-neutral-400">Фокус на реакции, дисциплине и грамотном выборе момента выхода.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaderboard / ranks side card -->
+        <aside class="space-y-5">
+          <div class="overflow-hidden rounded-[26px] border border-white/10 bg-gradient-to-b from-neutral-900 via-black to-neutral-950 p-5 shadow-[0_0_40px_rgba(15,23,42,1)]">
+            <div class="mb-4 flex items-center justify-between">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-400">Таблица лидеров</p>
+                <p class="mt-1 text-sm font-semibold text-white">Реальное время</p>
+              </div>
+              <span class="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-orange-300">LIVE FEED</span>
+            </div>
+
+            <div class="no-scrollbar space-y-1.5 rounded-2xl bg-neutral-950/80 p-2 text-[11px] text-neutral-200">
+              <div class="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
+                <div class="flex items-center gap-2">
+                  <span class="h-6 w-6 overflow-hidden rounded-full border border-white/15">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt="Игрок" class="h-full w-full object-cover grayscale" />
+                  </span>
+                  <div>
+                    <p class="font-semibold text-white">AlphaTrader</p>
+                    <p class="text-[10px] text-neutral-400">Ранг: Платина</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-semibold text-emerald-400">+12 430 ₽</p>
+                  <p class="text-[10px] text-neutral-400">x326.7</p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2">
+                  <span class="h-6 w-6 overflow-hidden rounded-full border border-white/10">
+                    <img src="https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?auto=format&fit=crop&w=80&q=80" alt="Игрок" class="h-full w-full object-cover grayscale" />
+                  </span>
+                  <div>
+                    <p class="font-semibold text-white">RiskControl</p>
+                    <p class="text-[10px] text-neutral-400">Ранг: Золото</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-semibold text-emerald-400">+3 980 ₽</p>
+                  <p class="text-[10px] text-neutral-400">x74.2</p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2">
+                  <span class="h-6 w-6 overflow-hidden rounded-full border border-white/10">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=80&q=80" alt="Игрок" class="h-full w-full object-cover grayscale" />
+                  </span>
+                  <div>
+                    <p class="font-semibold text-white">ColdMind</p>
+                    <p class="text-[10px] text-neutral-400">Ранг: Премиум</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-semibold text-emerald-400">+9 120 ₽</p>
+                  <p class="text-[10px] text-neutral-400">x184.5</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="mt-3 text-[11px] text-neutral-400">
+              <span class="font-semibold text-white">Ранги.</span> Делая ставки, игроки продвигаются по уровням: открывают
+              новые аватары, рамки профиля и премиальные эффекты возле никнейма в таблице лидеров.
+            </p>
+          </div>
+
+          <!-- Team / trust block with photos -->
+          <div class="space-y-3 rounded-[26px] border border-white/10 bg-gradient-to-r from-neutral-900 via-neutral-950 to-black p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-neutral-400">Команда и надёжность</p>
+            <p class="text-sm font-semibold text-white sm:text-base">
+              Премиальный визуал и строгие метрики риска — команда с финансовым бэкграундом.
+            </p>
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div class="overflow-hidden rounded-2xl bg-neutral-800">
+                <img
+                  src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=600&q=80"
+                  alt="Риск-аналитик OVERHEAT"
+                  class="h-32 w-full object-cover object-center grayscale"
+                />
+              </div>
+              <div class="overflow-hidden rounded-2xl bg-neutral-800">
+                <img
+                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80"
+                  alt="Дизайнер интерфейса OVERHEAT"
+                  class="h-32 w-full object-cover object-center grayscale"
+                />
+              </div>
+              <div class="overflow-hidden rounded-2xl bg-neutral-800">
+                <img
+                  src="https://images.unsplash.com/photo-1544723795-432537d12f6c?auto=format&fit=crop&w=600&q=80"
+                  alt="Инженер по продукту OVERHEAT"
+                  class="h-32 w-full object-cover object-center grayscale"
+                />
+              </div>
+            </div>
+            <p class="text-[11px] text-neutral-400">
+              Интерфейс остаётся минималистичным: никакого визуального шума, только чистые линии, понятные коэффициенты и
+              читаемые графики.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Divider -->
+      <div class="border-t border-dashed border-neutral-800/80"></div>
+
+      <!-- HOW TO FIND GAME + IMAGES -->
+      <section id="how-to-find" aria-labelledby="find-title" class="space-y-8">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">Если не можете найти игру</p>
+              <span class="text-[10px] text-orange-500">✦</span>
+            </div>
+            <h2 id="find-title" class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">
+              Где искать <span class="text-orange-500">OVERHEAT</span>
+            </h2>
+          </div>
+          <p class="max-w-xl text-sm text-neutral-300 sm:text-base">
+            Иногда игра скрыта в каталоге провайдера или в разделе быстрых игр. Используйте подсказки ниже: два шага со
+            скриншотами помогут быстро найти OVERHEAT в вашем казино.
+          </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          <!-- Step 1 -->
+          <article class="rounded-[26px] border border-white/10 bg-neutral-900/80 p-4 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="overflow-hidden rounded-2xl border border-white/10 bg-neutral-800/80">
+              <img src="im1.png" alt="Шаг 1 — Откройте раздел Crash / Быстрые игры" class="h-full w-full object-cover" />
+            </div>
+            <p class="mt-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-400">Шаг 1</p>
+            <p class="mt-1 text-sm text-neutral-200">
+              <span class="font-semibold">Откройте каталог игр казино.</span> Перейдите в раздел Crash, Быстрые игры или раздел
+              провайдера, к которому относится OVERHEAT.
+            </p>
+          </article>
+
+          <!-- Step 2 -->
+          <article class="rounded-[26px] border border-white/10 bg-neutral-900/80 p-4 shadow-[0_0_30px_rgba(15,23,42,0.9)]">
+            <div class="overflow-hidden rounded-2xl border border-white/10 bg-neutral-800/80">
+              <img src="im2.png" alt="Шаг 2 — Найдите игру OVERHEAT в списке" class="h-full w-full object-cover" />
+            </div>
+            <p class="mt-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-400">Шаг 2</p>
+            <p class="mt-1 text-sm text-neutral-200">
+              <span class="font-semibold">Найдите логотип OVERHEAT.</span> Ориентируйтесь на фирменный чёрно-оранжевый стиль и
+              название игры. Если нужно, воспользуйтесь поиском по имени.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Divider -->
+      <div class="border-t border-dashed border-neutral-800/80"></div>
+
+      <!-- SUPPORT / TELEGRAM -->
+      <section id="support" aria-labelledby="support-title" class="relative overflow-hidden rounded-[30px] border border-white/10 bg-gradient-to-r from-neutral-900 via-neutral-950 to-black px-6 py-8 sm:px-10 sm:py-10">
+        <div class="pointer-events-none absolute -left-24 top-[-40px] h-52 w-52 rounded-full bg-gradient-to-br from-orange-500/45 via-amber-200/25 to-transparent blur-3xl opacity-80"></div>
+        <div class="pointer-events-none absolute -right-16 bottom-[-60px] h-60 w-60 rounded-full bg-gradient-to-tl from-slate-100/20 via-slate-500/10 to-transparent blur-3xl opacity-70"></div>
+
+        <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div class="max-w-xl space-y-3">
+            <div class="flex items-center gap-2">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">Поддержка</p>
+              <span class="text-[10px] text-orange-500">+</span>
+              <span class="text-[10px] text-orange-500">✕</span>
+            </div>
+            <h2 id="support-title" class="text-2xl font-extrabold text-white sm:text-3xl">
+              Не нашли игру или остались вопросы?
+            </h2>
+            <p class="text-sm text-neutral-300 sm:text-base">
+              <span class="font-semibold text-white">Напишите в официальную поддержку.</span> Поможем найти OVERHEAT в вашем
+              казино, подскажем по механикам игры и актуальным акциям.
+            </p>
+            <p class="text-[11px] text-neutral-400">
+              Ответ обычно занимает несколько минут. Пожалуйста, опишите, через какое казино вы заходите и с какого устройства
+              играете.
+            </p>
+          </div>
+
+          <div class="relative flex flex-col items-start gap-4 rounded-2xl border border-white/15 bg-black/60 p-5 shadow-[0_0_30px_rgba(15,23,42,1)] sm:flex-row sm:items-center">
+            <div class="flex-1 space-y-1">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-400">Telegram</p>
+              <p class="text-sm font-semibold text-white sm:text-base">Официальная поддержка OVERHEAT</p>
+              <p class="text-[11px] text-neutral-400">
+                Быстрые ответы, подсказки по игре и индивидуальная помощь.
+              </p>
+            </div>
+            <div class="flex flex-col items-stretch gap-2 sm:items-end">
+              <a
+                href="https://t.me/gameallru"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary text-[10px] sm:text-[11px]"
+              >
+                ОТКРЫТЬ В TELEGRAM
+              </a>
+              <p class="text-[10px] text-neutral-500">@gameallru</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-800/80 bg-black/80">
+      <div class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-4 py-6 text-[11px] text-neutral-500 sm:flex-row sm:items-center sm:px-6 lg:px-8">
+        <p class="max-w-xl">
+          OVERHEAT — развлекательная казино игра формата Crash. Играй ответственно, не используй заемные средства и помни, что
+          каждое решение связано с риском. 18+.
+        </p>
+        <div class="flex items-center gap-4">
+          <span class="uppercase tracking-[0.18em] text-neutral-600">© 2025 OVERHEAT</span>
+          <span class="h-px w-8 bg-neutral-700"></span>
+          <a href="#top" class="uppercase tracking-[0.18em] text-neutral-400 transition hover:text-orange-400">Вверх</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- TikTok warning overlay -->
+  <div
+    id="tiktok-warning"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"
+  >
+    <div
+      class="relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/12 bg-neutral-950/95 p-6 shadow-[0_0_60px_rgba(249,115,22,0.8)] sm:p-8"
+    >
+      <!-- Close button (appears after 5 seconds) -->
+      <button
+        id="warning-close-btn"
+        type="button"
+        class="pointer-events-none absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-neutral-400 opacity-0 transition hover:border-white/50 hover:text-white"
+        aria-label="Закрыть окно"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" aria-hidden="true">
+          <path
+            d="M6 6l12 12M18 6L6 18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+
+      <div class="mb-4 flex items-center gap-3">
+        <span
+          class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-orange-500/50 bg-orange-500/15 text-orange-400"
+        >
+          !
+        </span>
+        <p class="text-xs font-semibold uppercase tracking-[0.26em] text-orange-400">Внимание</p>
+      </div>
+
+      <h2 class="mb-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+        Откройте страницу <span class="text-orange-500">в браузере</span>
+      </h2>
+      <p class="mb-4 text-sm text-neutral-300 sm:text-base">
+        Для корректной работы игры OVERHEAT необходимо покинуть встроенный браузер TikTok и открыть страницу в обычном
+        браузере на вашем устройстве.
+      </p>
+
+      <ol class="mb-5 list-decimal list-inside space-y-1.5 text-sm text-neutral-300">
+        <li>
+          Нажмите <span class="font-semibold">три точки</span> в правом верхнем углу окна TikTok.
+        </li>
+        <li>
+          Выберите пункт <span class="font-semibold">«Открыть в браузере»</span>.
+        </li>
+        <li>Откройте эту страницу в браузере и вернитесь к игре.</li>
+      </ol>
+
+      <p class="mb-3 text-xs text-neutral-500">Окно можно будет закрыть через 5 секунд.</p>
+
+      <div class="h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
+        <div
+          id="warning-progress-bar"
+          class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400 transition-[width] duration-100"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const overlay = document.getElementById("tiktok-warning");
+      const progressBar = document.getElementById("warning-progress-bar");
+      const closeBtn = document.getElementById("warning-close-btn");
+
+      if (!overlay || !progressBar || !closeBtn) return;
+
+      const totalDuration = 5000; // 5 секунд
+      const start = performance.now();
+
+      function step(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / totalDuration, 1);
+        progressBar.style.width = (progress * 100).toFixed(2) + "%";
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Разрешаем закрывать окно
+          closeBtn.classList.remove("opacity-0", "pointer-events-none");
+        }
+      }
+
+      requestAnimationFrame(step);
+
+      closeBtn.addEventListener("click", function () {
+        overlay.classList.add("opacity-0", "pointer-events-none");
+        setTimeout(function () {
+          overlay.style.display = "none";
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>
