@@ -1,65 +1,80 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OVERHEAT — откройте в браузере</title>
-  <meta
-    name="description"
-    content="ВНИМАНИЕ! Для корректной работы игры OVERHEAT откройте страницу во внешнем браузере, а не внутри приложения социальной сети."
-  />
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OVERHEAT Crash Game — Uyarı</title>
+    <meta
+      name="description"
+      content="Overheat crash oyunu için uyarı: yerleşik tarayıcıdan çıkın ve sayfayı cihazınızın ana tarayıcısında açın."
+    />
 
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(148, 163, 184, 0.22), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.32), transparent 60%),
-        radial-gradient(circle at 50% 100%, rgba(15, 23, 42, 0.9), #020617 70%);
-      color: #f9fafb;
-    }
+    <style>
+      :root {
+        color-scheme: dark;
+      }
 
-    #warning-card {
-      box-shadow:
-        0 0 40px rgba(15, 23, 42, 0.9),
-        0 0 70px rgba(249, 115, 22, 0.7);
-    }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.2), transparent 55%),
+          radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.26), transparent 55%),
+          radial-gradient(circle at 50% 105%, rgba(15, 23, 42, 0.95), #020617 70%);
+        color: #f9fafb;
+      }
 
-    #progress-bar-inner {
-      transition: width 0.1s linear;
-    }
+      #warning-card {
+        box-shadow:
+          0 0 18px rgba(15, 23, 42, 0.8),
+          0 0 32px rgba(249, 115, 22, 0.5);
+        backdrop-filter: blur(14px);
+      }
 
-    #close-btn {
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-  </style>
-</head>
+      #progress-bar-inner {
+        transition: width 0.1s linear;
+      }
 
-<body class="min-h-screen bg-black text-slate-50 antialiased">
-  <div class="relative flex min-h-screen items-center justify-center overflow-hidden">
-    <!-- Decorative background glows -->
-    <div class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute -top-32 -left-24 h-64 w-64 rounded-full bg-orange-500/30 blur-3xl"></div>
-      <div class="absolute -top-16 right-0 h-72 w-72 rounded-full bg-slate-200/15 blur-3xl"></div>
-      <div class="absolute bottom-[-140px] left-1/2 h-72 w-[420px] -translate-x-1/2 rounded-[999px] bg-gradient-to-t from-orange-500/40 via-amber-200/10 to-transparent blur-3xl"></div>
-    </div>
+      #close-btn {
+        transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      }
 
-    <!-- Warning card -->
+      #close-btn.enabled:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 1px rgba(248, 250, 252, 0.2);
+      }
+
+      .lang-btn-active {
+        background: rgb(249 115 22);
+        color: #020617;
+        border-color: rgba(248, 250, 252, 0.85);
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-slate-50 antialiased">
     <div
-      id="warning-card"
-      class="relative w-full max-w-lg rounded-3xl border border-white/15 bg-neutral-950/95 px-6 py-7 sm:px-8 sm:py-8"
+      class="relative flex min-h-screen justify-center items-start sm:items-center px-3 sm:px-4 py-4 sm:py-0 overflow-hidden"
     >
+      <!-- Decorative background glows -->
+      <div class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute -top-24 -left-24 h-56 w-56 rounded-full bg-orange-500/25 blur-3xl"></div>
+        <div class="absolute -top-16 right-0 h-64 w-64 rounded-full bg-orange-300/20 blur-3xl"></div>
+        <div
+          class="absolute bottom-[-120px] left-1/2 h-64 w-[360px] -translate-x-1/2 rounded-[999px] bg-gradient-to-t from-orange-500/40 via-orange-200/10 to-transparent blur-3xl"
+        ></div>
+      </div>
+
       <!-- Close button (appears after 5s) -->
       <button
         id="close-btn"
         type="button"
-        class="pointer-events-none absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-neutral-400 opacity-0 hover:border-white/60 hover:text-white"
-        aria-label="Закрыть и перейти к игре"
+        class="pointer-events-none fixed right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/80 text-neutral-300 opacity-0 shadow-md sm:right-5 sm:top-5"
+        aria-label="Kapat ve oyuna geç"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" aria-hidden="true">
           <path
@@ -72,282 +87,294 @@
         </svg>
       </button>
 
-      <!-- Language switcher -->
-      <div class="mb-4 flex justify-end">
-        <div class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/60 px-3 py-1 text-[11px]">
+      <!-- Warning card (made smaller) -->
+      <div
+        id="warning-card"
+        class="relative mt-16 w-full max-w-sm rounded-2xl border border-white/15 bg-slate-950/95 px-4 py-4 sm:mt-0 sm:max-w-md sm:px-6 sm:py-5"
+      >
+        <!-- Top row: logo + language selector -->
+        <div class="mb-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-orange-400/70 bg-orange-500/10 text-[10px] font-semibold tracking-[0.2em] text-orange-300"
+            >
+              OH
+            </span>
+            <div class="leading-tight">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-orange-400">OVERHEAT</p>
+              <p class="text-[11px] text-slate-400">Crash Game • Online</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 text-[10px] font-medium text-slate-300">
+            <span class="mr-1 text-[9px] uppercase tracking-[0.2em] text-slate-500">Lang</span>
+            <button
+              type="button"
+              class="lang-btn rounded-full border border-slate-600/80 px-1.5 py-0.5 text-[10px] lang-btn-active"
+              data-lang="tr"
+            >
+              TR
+            </button>
+            <button
+              type="button"
+              class="lang-btn rounded-full border border-slate-600/80 px-1.5 py-0.5 text-[10px]"
+              data-lang="ru"
+            >
+              RU
+            </button>
+            <button
+              type="button"
+              class="lang-btn rounded-full border border-slate-600/80 px-1.5 py-0.5 text-[10px]"
+              data-lang="en"
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              class="lang-btn rounded-full border border-slate-600/80 px-1.5 py-0.5 text-[10px]"
+              data-lang="pt"
+            >
+              PT
+            </button>
+            <button
+              type="button"
+              class="lang-btn rounded-full border border-slate-600/80 px-1.5 py-0.5 text-[10px]"
+              data-lang="in"
+            >
+              IN
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3 flex items-center gap-2">
           <span
-            id="lang-label"
-            class="mr-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-neutral-400"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-xl border border-orange-400/70 bg-orange-500/10 text-[13px] font-bold text-orange-300"
           >
-            ЯЗЫК
+            !
           </span>
-          <button
-            type="button"
-            class="lang-btn rounded-full border border-orange-400/80 bg-orange-500 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-black"
-            data-lang="ru"
-          >
-            RU
-          </button>
-          <button
-            type="button"
-            class="lang-btn rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold tracking-wide text-neutral-300 hover:text-white"
-            data-lang="en"
-          >
-            EN
-          </button>
-          <button
-            type="button"
-            class="lang-btn rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold tracking-wide text-neutral-300 hover:text-white"
-            data-lang="pt"
-          >
-            PT
-          </button>
-          <button
-            type="button"
-            class="lang-btn rounded-full border border-transparent px-2 py-0.5 text-[11px] font-semibold tracking-wide text-neutral-300 hover:text-white"
-            data-lang="hi"
-          >
-            IN
-          </button>
+          <div class="leading-tight">
+            <p
+              id="badge-title"
+              class="text-[10px] font-semibold uppercase tracking-[0.28em] text-orange-400"
+            >
+              UYARI
+            </p>
+            <p id="badge-sub" class="text-[11px] text-slate-400">Overheat oyununu güvenli kullanmak için</p>
+          </div>
         </div>
-      </div>
 
-      <div class="mb-4 flex items-center gap-3">
-        <span
-          class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-orange-500/60 bg-orange-500/15 text-lg font-bold text-orange-400"
+        <h1
+          id="main-title"
+          class="mb-2 text-[17px] font-extrabold tracking-tight text-white sm:text-[19px] sm:leading-snug"
         >
-          !
-        </span>
-        <div class="leading-tight">
-          <p
-            id="warning-label"
-            class="text-[11px] font-semibold uppercase tracking-[0.26em] text-orange-400"
-          >
-            ВНИМАНИЕ
-          </p>
-          <p id="subtitle" class="text-xs text-slate-400">Для корректной работы игры OVERHEAT</p>
+          Oyunu <span class="text-orange-400">dış tarayıcıda</span> açın
+        </h1>
+
+        <p id="intro" class="mb-3 text-[13px] leading-relaxed text-neutral-200">
+          Eğer bu sayfayı bir sosyal ağın veya mesajlaşma uygulamasının yerleşik tarayıcısında açtıysanız, Overheat
+          crash oyununun bazı işlevleri düzgün çalışmayabilir. En iyi deneyim için sayfayı cihazınızın ana tarayıcısında
+          açın.
+        </p>
+
+        <ol id="steps" class="mb-3 list-decimal list-inside space-y-1.5 text-[13px] text-neutral-200">
+          <li>
+            Sağ üst köşede menüyü açın (<span class="font-semibold">üç nokta</span> veya
+            <span class="font-semibold">"Paylaş"</span> simgesi).
+          </li>
+          <li>
+            <span class="font-semibold">"Tarayıcıda aç"</span> ya da uygulamanızdaki benzer seçeneği seçin.
+          </li>
+          <li>
+            Aşağıdaki zamanlayıcının bitmesini bekleyin ve sağ üst köşedeki kapatma düğmesine dokunarak Overheat oyununa
+            geçin.
+          </li>
+        </ol>
+
+        <p id="timer-note" class="mb-2 text-[11px] leading-relaxed text-neutral-400">
+          Kapatma düğmesi <span class="font-semibold text-orange-400">5 saniye</span> sonra kullanılabilir olacaktır —
+          bundan sonra Overheat oyununa yönlendirileceksiniz.
+        </p>
+
+        <!-- Progress bar -->
+        <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
+          <div
+            id="progress-bar-inner"
+            class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-amber-300"
+          ></div>
         </div>
+
+        <p id="footer-note" class="mt-3 text-[11px] text-neutral-500">
+          Lütfen sorumlu bir şekilde oynayın. 18+; asla kaybetmeyi göze alamayacağınız parayla oynamayın.
+        </p>
       </div>
-
-      <h1 id="main-title" class="mb-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-        Откройте страницу <span class="text-orange-500">во внешнем браузере</span>
-      </h1>
-
-      <p id="browser-text" class="mb-4 text-sm text-neutral-300 sm:text-base">
-        Если вы открыли эту страницу во встроенном браузере
-        <span class="font-semibold text-white">социальной сети</span>, игра может работать некорректно или вовсе не
-        запуститься. Перед тем как продолжить, откройте ссылку <span class="font-semibold">во внешнем браузере</span> на
-        устройстве.
-      </p>
-
-      <ol class="mb-4 list-decimal list-inside space-y-1.5 text-sm text-neutral-300 sm:text-base">
-        <li id="step1">
-          Откройте меню (<span class="font-semibold">три точки</span> или значок
-          <span class="font-semibold">«Поделиться»</span>) в правом верхнем углу приложения.
-        </li>
-        <li id="step2">
-          Выберите пункт <span class="font-semibold">«Открыть в браузере»</span> или аналогичный вариант.
-        </li>
-        <li id="step3">
-          Дождитесь окончания таймера ниже и закройте это окно, чтобы перейти к игре OVERHEAT.
-        </li>
-      </ol>
-
-      <p id="timer-note" class="mb-2 text-xs text-neutral-400">
-        Кнопка закрытия станет доступна через
-        <span class="font-semibold text-orange-400">5 секунд</span> — после этого откроется ссылка на игру во внешнем
-        браузере.
-      </p>
-
-      <!-- Progress bar -->
-      <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
-        <div
-          id="progress-bar-inner"
-          class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-yellow-400"
-        ></div>
-      </div>
-
-      <p id="responsible-note" class="mt-3 text-[11px] text-neutral-500">
-        Пожалуйста, убедитесь, что вам уже есть 18 лет и вы играете ответственно.
-      </p>
     </div>
-  </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const closeBtn = document.getElementById("close-btn");
-      const progressInner = document.getElementById("progress-bar-inner");
-      const langButtons = document.querySelectorAll(".lang-btn");
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const closeBtn = document.getElementById("close-btn");
+        const progressInner = document.getElementById("progress-bar-inner");
 
-      const warningLabelEl = document.querySelectorAll("#warning-label");
-      const subtitleEl = document.getElementById("subtitle");
-      const mainTitleEl = document.getElementById("main-title");
-      const browserTextEl = document.getElementById("browser-text");
-      const step1El = document.getElementById("step1");
-      const step2El = document.getElementById("step2");
-      const step3El = document.getElementById("step3");
-      const timerNoteEl = document.getElementById("timer-note");
-      const responsibleNoteEl = document.getElementById("responsible-note");
-      const langLabelEl = document.getElementById("lang-label");
+        const REDIRECT_URL = "https://1wodrp.life/casino/play/v_mascotgaming:overheat?p=cmzx";
 
-      const REDIRECT_URL = "";
+        if (!closeBtn || !progressInner) return;
 
-      const translations = {
-        ru: {
-          warningLabel: "ВНИМАНИЕ",
-          subtitle: "Для корректной работы игры OVERHEAT",
-          mainTitle:
-            'Откройте страницу <span class="text-orange-500">во внешнем браузере</span>',
-          browserText:
-            'Если вы открыли эту страницу во встроенном браузере <span class="font-semibold text-white">социальной сети</span>, игра может работать некорректно или вовсе не запуститься. Перед тем как продолжить, откройте ссылку <span class="font-semibold">во внешнем браузере</span> на устройстве.',
-          step1:
-            'Откройте меню (<span class="font-semibold">три точки</span> или значок <span class="font-semibold">«Поделиться»</span>) в правом верхнем углу приложения.',
-          step2:
-            'Выберите пункт <span class="font-semibold">«Открыть в браузере»</span> или аналогичный вариант.',
-          step3:
-            'Дождитесь окончания таймера ниже и закройте это окно, чтобы перейти к игре OVERHEAT.',
-          timerNote:
-            'Кнопка закрытия станет доступна через <span class="font-semibold text-orange-400">5 секунд</span> — после этого откроется ссылка на игру во внешнем браузере.',
-          responsibleNote:
-            'Пожалуйста, убедитесь, что вам уже есть 18 лет и вы играете ответственно.',
-          langLabel: "ЯЗЫК",
-        },
-        en: {
-          warningLabel: "WARNING",
-          subtitle: "To make OVERHEAT work correctly",
-          mainTitle:
-            'Open this page <span class="text-orange-500">in your browser</span>',
-          browserText:
-            'If you opened this page inside the in-app browser of a <span class="font-semibold text-white">social network</span>, the game may not work correctly or may not launch at all. Before continuing, open the link in the <span class="font-semibold">external browser</span> on your device.',
-          step1:
-            'Open the menu (<span class="font-semibold">three dots</span> or the <span class="font-semibold">share icon</span>) in the top-right corner of the app.',
-          step2:
-            'Choose <span class="font-semibold">“Open in browser”</span> or a similar option.',
-          step3:
-            'Wait for the timer below to finish and then close this window to continue to the OVERHEAT game.',
-          timerNote:
-            'The close button will become available in <span class="font-semibold text-orange-400">5 seconds</span> — after that, the game link will open in your browser.',
-          responsibleNote:
-            'Please make sure you are over 18 and play responsibly.',
-          langLabel: "LANGUAGE",
-        },
-        pt: {
-          warningLabel: "ATENÇÃO",
-          subtitle: "Para o jogo OVERHEAT funcionar corretamente",
-          mainTitle:
-            'Abra esta página <span class="text-orange-500">no navegador</span>',
-          browserText:
-            'Se você abriu esta página no navegador interno de uma <span class="font-semibold text-white">rede social</span>, o jogo pode não funcionar corretamente ou nem iniciar. Antes de continuar, abra o link em um <span class="font-semibold">navegador externo</span> do seu dispositivo.',
-          step1:
-            'Abra o menu (<span class="font-semibold">três pontos</span> ou o ícone de <span class="font-semibold">compartilhar</span>) no canto superior direito do aplicativo.',
-          step2:
-            'Escolha a opção <span class="font-semibold">“Abrir no navegador”</span> ou similar.',
-          step3:
-            'Aguarde o término do cronômetro abaixo e feche esta janela para continuar para o jogo OVERHEAT.',
-          timerNote:
-            'O botão de fechar ficará disponível em <span class="font-semibold text-orange-400">5 segundos</span> — depois disso, o link do jogo será aberto no navegador.',
-          responsibleNote:
-            'Certifique-se de que você tem mais de 18 anos e jogue com responsabilidade.',
-          langLabel: "IDIOMA",
-        },
-        hi: {
-          warningLabel: "ध्यान दें",
-          subtitle: "OVERHEAT गेम के सही काम के लिए",
-          mainTitle:
-            'पेज को <span class="text-orange-500">ब्राउज़र में खोलें</span>',
-          browserText:
-            'अगर आपने यह पेज किसी <span class="font-semibold text-white">सोशल नेटवर्क के इन‑ऐप ब्राउज़र</span> में खोला है, तो गेम सही से काम नहीं कर सकता या शुरू ही नहीं होगा। आगे बढ़ने से पहले इस लिंक को अपने <span class="font-semibold">बाहरी ब्राउज़र</span> में खोलें।',
-          step1:
-            'ऐप के दाएँ ऊपर कोने में मेन्यू खोलें (<span class="font-semibold">तीन डॉट्स</span> या <span class="font-semibold">शेयर आइकन</span>).',
-          step2:
-            '<span class="font-semibold">“ब्राउज़र में खोलें”</span> या मिलता‑जुलता विकल्प चुनें।',
-          step3:
-            'नीचे दिए गए टाइमर के खत्म होने तक इंतज़ार करें और फिर यह विंडो बंद करके OVERHEAT गेम पर जाएँ।',
-          timerNote:
-            'क्लोज बटन <span class="font-semibold text-orange-400">5 सेकंड</span> बाद उपलब्ध होगा — इसके बाद गेम की लिंक आपके ब्राउज़र में खुलेगी।',
-          responsibleNote:
-            'कृपया सुनिश्चित करें कि आपकी उम्र 18 साल से अधिक है और ज़िम्मेदारी से खेलें।',
-          langLabel: "भाषा",
-        },
-      };
+        const totalDuration = 5000; // 5 seconds
+        const start = performance.now();
 
-      function applyLanguage(lang) {
-        const t = translations[lang];
-        if (!t) return;
+        function step(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / totalDuration, 1);
+          progressInner.style.width = (progress * 100).toFixed(2) + "%";
 
-        // There are two elements with id="warning-label" in the DOM (language row and main block).
-        warningLabelEl.forEach((el) => {
-          el.textContent = t.warningLabel;
-        });
-        if (subtitleEl) subtitleEl.textContent = t.subtitle;
-        if (mainTitleEl) mainTitleEl.innerHTML = t.mainTitle;
-        if (browserTextEl) browserTextEl.innerHTML = t.browserText;
-        if (step1El) step1El.innerHTML = t.step1;
-        if (step2El) step2El.innerHTML = t.step2;
-        if (step3El) step3El.innerHTML = t.step3;
-        if (timerNoteEl) timerNoteEl.innerHTML = t.timerNote;
-        if (responsibleNoteEl) responsibleNoteEl.textContent = t.responsibleNote;
-        if (langLabelEl) langLabelEl.textContent = t.langLabel;
-
-        document.documentElement.lang = lang;
-      }
-
-      function setActiveLangButton(lang) {
-        langButtons.forEach((btn) => {
-          const isActive = btn.dataset.lang === lang;
-          btn.classList.toggle("bg-orange-500", isActive);
-          btn.classList.toggle("text-black", isActive);
-          btn.classList.toggle("border-orange-400/80", isActive);
-
-          if (!isActive) {
-            btn.classList.remove("bg-orange-500", "text-black", "border-orange-400/80");
-            btn.classList.add("border-transparent", "text-neutral-300");
+          if (progress < 1) {
+            requestAnimationFrame(step);
           } else {
-            btn.classList.remove("border-transparent", "text-neutral-300");
+            closeBtn.classList.remove("pointer-events-none");
+            closeBtn.classList.remove("opacity-0");
+            closeBtn.classList.add("opacity-100", "enabled");
           }
-        });
-      }
-
-      langButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const lang = btn.dataset.lang;
-          applyLanguage(lang);
-          setActiveLangButton(lang);
-        });
-      });
-
-      // Initialize default language
-      applyLanguage("ru");
-      setActiveLangButton("ru");
-
-      // Timer and redirect logic
-      if (!closeBtn || !progressInner) return;
-
-      const totalDuration = 5000; // 5 секунд
-      const start = performance.now();
-
-      function step(now) {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / totalDuration, 1);
-        progressInner.style.width = (progress * 100).toFixed(2) + "%";
-
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          // Разрешаем закрывать окно
-          closeBtn.classList.remove("pointer-events-none");
-          closeBtn.classList.remove("opacity-0");
-          closeBtn.classList.add("opacity-100");
         }
-      }
 
-      requestAnimationFrame(step);
+        requestAnimationFrame(step);
 
-      closeBtn.addEventListener("click", function () {
-        window.location.href = REDIRECT_URL;
+        closeBtn.addEventListener("click", function () {
+          window.location.href = REDIRECT_URL;
+        });
+
+        // Simple i18n
+        const translations = {
+          tr: {
+            badgeTitle: "UYARI",
+            badgeSub: "Overheat oyununu güvenli kullanmak için",
+            mainTitle: 'Oyunu <span class="text-orange-400">dış tarayıcıda</span> açın',
+            intro:
+              "Eğer bu sayfayı bir sosyal ağın veya mesajlaşma uygulamasının yerleşik tarayıcısında açtıysanız, Overheat crash oyununun bazı işlevleri düzgün çalışmayabilir. En iyi deneyim için sayfayı cihazınızın ana tarayıcısında açın.",
+            steps: [
+              'Sağ üst köşede menüyü açın (<span class="font-semibold">üç nokta</span> veya <span class="font-semibold">\"Paylaş\"</span> simgesi).',
+              '<span class="font-semibold">\"Tarayıcıda aç\"</span> ya da uygulamanızdaki benzer seçeneği seçin.',
+              'Aşağıdaki zamanlayıcının bitmesini bekleyin ve sağ üst köşedeki kapatma düğmesine dokunarak Overheat oyununa geçin.',
+            ],
+            timerNote:
+              'Kapatma düğmesi <span class="font-semibold text-orange-400">5 saniye</span> sonra kullanılabilir olacaktır — bundan sonra Overheat oyununa yönlendirileceksiniz.',
+            footer:
+              "Lütfen sorumlu bir şekilde oynayın. 18+; asla kaybetmeyi göze alamayacağınız parayla oynamayın.",
+          },
+          ru: {
+            badgeTitle: "ВНИМАНИЕ",
+            badgeSub: "Чтобы игра работала корректно",
+            mainTitle: 'Откройте игру <span class="text-orange-400">во внешнем браузере</span>',
+            intro:
+              "Если вы открыли эту страницу во встроенном браузере социальной сети или мессенджера, часть функций crash-игры Overheat может работать некорректно. Для стабильной работы откройте ссылку во внешнем браузере на вашем устройстве.",
+            steps: [
+              "В правом верхнем углу приложения откройте меню (<span class=\"font-semibold\">три точки</span> или значок <span class=\"font-semibold\">\"Поделиться\"</span>).",
+              'Выберите пункт <span class="font-semibold">"Открыть в браузере"</span> или аналогичный вариант в вашем приложении.',
+              "Дождитесь окончания таймера ниже и нажмите на кнопку закрытия в правом верхнем углу экрана, чтобы перейти в игру Overheat.",
+            ],
+            timerNote:
+              'Кнопка закрытия станет доступна через <span class="font-semibold text-orange-400">5 секунд</span> — после этого вы будете перенаправлены в игру Overheat.',
+            footer:
+              "Пожалуйста, играйте ответственно. 18+; не используйте для игры деньги, которые не готовы потерять.",
+          },
+          en: {
+            badgeTitle: "WARNING",
+            badgeSub: "For the best Overheat experience",
+            mainTitle: 'Open the game in an <span class="text-orange-400">external browser</span>',
+            intro:
+              "If you opened this page inside a social network or messenger in-app browser, some Overheat crash game features may not work correctly. For a stable experience, open this link in your device's main browser.",
+            steps: [
+              'Open the menu in the top-right corner (the <span class="font-semibold">three dots</span> or the <span class="font-semibold">"Share"</span> icon).',
+              'Choose <span class="font-semibold">"Open in browser"</span> or a similar option in your app.',
+              'Wait until the timer below finishes, then tap the close button in the top-right corner to continue to Overheat.',
+            ],
+            timerNote:
+              'The close button will be available in <span class="font-semibold text-orange-400">5 seconds</span> — after that you will be redirected to the Overheat game.',
+            footer:
+              "Please play responsibly. 18+; never play with money you cannot afford to lose.",
+          },
+          pt: {
+            badgeTitle: "ATENÇÃO",
+            badgeSub: "Para jogar Overheat com segurança",
+            mainTitle: 'Abra o jogo em um <span class="text-orange-400">navegador externo</span>',
+            intro:
+              "Se você abriu esta página no navegador interno de uma rede social ou mensageiro, algumas funções do jogo crash Overheat podem não funcionar corretamente. Para a melhor experiência, abra o link no navegador principal do seu dispositivo.",
+            steps: [
+              'No canto superior direito, abra o menu (<span class="font-semibold">três pontos</span> ou o ícone <span class="font-semibold">"Compartilhar"</span>).',
+              'Selecione <span class="font-semibold">"Abrir no navegador"</span> ou opção semelhante no seu aplicativo.',
+              'Aguarde o fim do cronômetro abaixo e toque no botão de fechar no canto superior direito para ir para o Overheat.',
+            ],
+            timerNote:
+              'O botão de fechar ficará disponível em <span class="font-semibold text-orange-400">5 segundos</span> — depois disso você será redirecionado para o jogo Overheat.',
+            footer:
+              "Jogue com responsabilidade. 18+; nunca jogue com dinheiro que você não pode perder.",
+          },
+          in: {
+            badgeTitle: "चेतावनी",
+            badgeSub: "Overheat को सुरक्षित रूप से खेलने के लिए",
+            mainTitle: 'गेम को <span class="text-orange-400">बाहरी ब्राउज़र</span> में खोलें',
+            intro:
+              "अगर आपने यह पेज किसी सोशल नेटवर्क या मैसेजिंग ऐप के इन-ऐप ब्राउज़र में खोला है, तो Overheat क्रैश गेम की कुछ सुविधाएँ सही से काम नहीं कर सकतीं। बेहतर अनुभव के लिए लिंक को अपने मुख्य ब्राउज़र में खोलें।",
+            steps: [
+              'ऊपरी दाईं ओर मेनू खोलें (<span class="font-semibold">तीन डॉट्स</span> या <span class="font-semibold">"शेयर"</span> आइकन).',
+              '<span class="font-semibold">"ब्राउज़र में खोलें"</span> या ऐप में मौजूद समान विकल्प चुनें.',
+              'नीचे दिए गए टाइमर के खत्म होने तक प्रतीक्षा करें, फिर ऊपरी दाईं ओर वाले बंद करने के बटन पर टैप करके Overheat गेम पर जाएँ.',
+            ],
+            timerNote:
+              '<span class="font-semibold text-orange-400">5 सेकंड</span> बाद बंद करने का बटन उपलब्ध होगा — उसके बाद आपको Overheat गेम पर रीडायरेक्ट कर दिया जाएगा।',
+            footer:
+              "कृपया ज़िम्मेदारी से खेलें। 18+; ऐसे पैसों से न खेलें जिन्हें आप खो नहीं सकते।",
+          },
+        };
+
+        const badgeTitleEl = document.getElementById("badge-title");
+        const badgeSubEl = document.getElementById("badge-sub");
+        const mainTitleEl = document.getElementById("main-title");
+        const introEl = document.getElementById("intro");
+        const stepsEl = document.getElementById("steps");
+        const timerNoteEl = document.getElementById("timer-note");
+        const footerEl = document.getElementById("footer-note");
+        const langButtons = document.querySelectorAll(".lang-btn");
+
+        function setLanguage(lang) {
+          const t = translations[lang] || translations.tr;
+          document.documentElement.lang = lang === "in" ? "hi" : lang;
+
+          if (badgeTitleEl) badgeTitleEl.textContent = t.badgeTitle;
+          if (badgeSubEl) badgeSubEl.textContent = t.badgeSub;
+          if (mainTitleEl) mainTitleEl.innerHTML = t.mainTitle;
+          if (introEl) introEl.textContent = t.intro;
+
+          if (stepsEl && Array.isArray(t.steps)) {
+            stepsEl.innerHTML = "";
+            t.steps.forEach(function (item) {
+              const li = document.createElement("li");
+              li.className = "text-[13px] text-neutral-200";
+              li.innerHTML = item;
+              stepsEl.appendChild(li);
+            });
+          }
+
+          if (timerNoteEl) timerNoteEl.innerHTML = t.timerNote;
+          if (footerEl) footerEl.textContent = t.footer;
+
+          langButtons.forEach(function (btn) {
+            if (btn.dataset.lang === lang) {
+              btn.classList.add("lang-btn-active");
+            } else {
+              btn.classList.remove("lang-btn-active");
+            }
+          });
+        }
+
+        langButtons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            const lang = btn.dataset.lang;
+            setLanguage(lang);
+          });
+        });
+
+        // Ensure default language is Turkish on load
+        setLanguage("tr");
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-
